@@ -7,6 +7,7 @@
 //
 
 import XCTest
+import Foundation
 
 class PromiseTests: XCTestCase {
 
@@ -20,9 +21,57 @@ class PromiseTests: XCTestCase {
         super.tearDown()
     }
 
-    func testExample() {
-        // This is an example of a functional test case.
-        XCTAssert(true, "Pass")
+    func testPromises() {
+
+        let sema: dispatch_semaphore_t? = dispatch_semaphore_create(0)
+
+        var result: Int? = nil
+
+        let p0 = Promise<NSString>()
+
+        let p1 = p0.then({ (str: NSString) -> NSNumber  in
+                assert(str == "1234")
+                return Int(str.intValue)
+            }, onRejected: { error in
+
+            })
+
+        let p2 = p1.then({ (val: NSNumber) -> NSNumber in
+                assert(val == 1234)
+                return val
+            }, onRejected: { error in
+
+            })
+
+        p2.then({ (val: NSNumber) -> NSNumber in
+                result = Int(val)
+                dispatch_semaphore_signal(sema)
+                return val
+            }, onRejected: { error in
+
+            })
+
+        let delay = 0.5 * Double(NSEC_PER_SEC)
+        let time = dispatch_time(DISPATCH_TIME_NOW, Int64(delay))
+
+        dispatch_after(time, dispatch_queue_create("temp2", nil)) {
+            p0.fulfill("1234")
+        }
+
+        dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER)
+
+        assert(result?)
+        assert(result! == 1234)
+
+        // Test after fulfill
+        p2.then({ (val: NSNumber) -> NSNumber in
+                result = 4321
+                return val
+            }, onRejected: { error in
+
+            })
+
+        assert(result! == 4321)
     }
 
     func testPerformanceExample() {

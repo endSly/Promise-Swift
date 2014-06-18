@@ -10,10 +10,26 @@
 		0DF064FC194F916B00FEC7C9 /* Promise.h in Headers */ = {isa = PBXBuildFile; fileRef = 0DF064FB194F916B00FEC7C9 /* Promise.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		0DF06502194F916B00FEC7C9 /* Promise.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0DF064F6194F916B00FEC7C9 /* Promise.framework */; };
 		0DF06509194F916B00FEC7C9 /* PromiseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DF06508194F916B00FEC7C9 /* PromiseTests.swift */; };
+		0DF06513194F918900FEC7C9 /* Promise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DF06512194F918900FEC7C9 /* Promise.swift */; };
+		0DF06518194F954E00FEC7C9 /* Promise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DF06512194F918900FEC7C9 /* Promise.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
 		0DF06503194F916B00FEC7C9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0DF064ED194F916B00FEC7C9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 0DF064F5194F916B00FEC7C9;
+			remoteInfo = Promise;
+		};
+		0DF06514194F954100FEC7C9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0DF064ED194F916B00FEC7C9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 0DF064F5194F916B00FEC7C9;
+			remoteInfo = Promise;
+		};
+		0DF06516194F954100FEC7C9 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0DF064ED194F916B00FEC7C9 /* Project object */;
 			proxyType = 1;
@@ -29,6 +45,7 @@
 		0DF06501194F916B00FEC7C9 /* PromiseTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PromiseTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0DF06507194F916B00FEC7C9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0DF06508194F916B00FEC7C9 /* PromiseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromiseTests.swift; sourceTree = "<group>"; };
+		0DF06512194F918900FEC7C9 /* Promise.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Promise.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,6 +90,7 @@
 			children = (
 				0DF064FB194F916B00FEC7C9 /* Promise.h */,
 				0DF064F9194F916B00FEC7C9 /* Supporting Files */,
+				0DF06512194F918900FEC7C9 /* Promise.swift */,
 			);
 			path = Promise;
 			sourceTree = "<group>";
@@ -146,6 +164,8 @@
 			);
 			dependencies = (
 				0DF06504194F916B00FEC7C9 /* PBXTargetDependency */,
+				0DF06515194F954100FEC7C9 /* PBXTargetDependency */,
+				0DF06517194F954100FEC7C9 /* PBXTargetDependency */,
 			);
 			name = PromiseTests;
 			productName = PromiseTests;
@@ -210,6 +230,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0DF06513194F918900FEC7C9 /* Promise.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -217,6 +238,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0DF06518194F954E00FEC7C9 /* Promise.swift in Sources */,
 				0DF06509194F916B00FEC7C9 /* PromiseTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -228,6 +250,16 @@
 			isa = PBXTargetDependency;
 			target = 0DF064F5194F916B00FEC7C9 /* Promise */;
 			targetProxy = 0DF06503194F916B00FEC7C9 /* PBXContainerItemProxy */;
+		};
+		0DF06515194F954100FEC7C9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 0DF064F5194F916B00FEC7C9 /* Promise */;
+			targetProxy = 0DF06514194F954100FEC7C9 /* PBXContainerItemProxy */;
+		};
+		0DF06517194F954100FEC7C9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 0DF064F5194F916B00FEC7C9 /* Promise */;
+			targetProxy = 0DF06516194F954100FEC7C9 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -320,6 +352,7 @@
 		0DF0650D194F916B00FEC7C9 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -329,12 +362,14 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
 		0DF0650E194F916B00FEC7C9 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
