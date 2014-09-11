@@ -12,85 +12,86 @@ enum PromiseStatus {
     case Pending, Fulfilled, Rejected
 }
 
-class Promise<T: AnyObject> {
-    typealias Resolve = (T) -> Void
-    typealias Reject = (NSError) -> Void
-
+public class Promise<T> {
+    public typealias Resolve = (T) -> Void
+    public typealias Reject = (NSError) -> Void
+    
     let queue: dispatch_queue_t = dispatch_get_main_queue()
-
+    
     var status: PromiseStatus = .Pending
-    var isPending: Bool { get { return status == .Pending } }
-
-    var successCallbacks: Resolve[] = []
-    var failureCallbacks: Reject[] = []
-
+    
+    var successCallbacks: [Resolve] = []
+    var failureCallbacks: [Reject] = []
+    
     var value: T?
     var error: NSError?
-
-    init() { }
-
-    init(queue: dispatch_queue_t) {
-        self.queue = queue
-    }
-
-    init(callback: (Resolve, Reject) -> Void) {
-        callback(self.fulfill, self.reject)
-    }
-
-    init(queue: dispatch_queue_t?, callback: (Resolve, Reject) -> Void) {
-        if queue? {
+    
+    public var isPending:   Bool { get { return status == .Pending   } }
+    public var isFullfiled: Bool { get { return status == .Fulfilled } }
+    public var isRejected:  Bool { get { return status == .Rejected  } }
+   
+    public init(queue: dispatch_queue_t? = nil) {
+        if queue? != nil {
             self.queue = queue!
         }
-
+    }
+    
+    public convenience init(queue: dispatch_queue_t? = nil, callback: ((Resolve, Reject) -> Void)) {
+        self.init(queue: queue)
         callback(self.fulfill, self.reject)
     }
-
-    func fulfill(value: T) {
+    
+    public func fulfill(value: T) {
         self.value = value
         self.status = .Fulfilled
-
-        for cb in self.successCallbacks {
-            cb(value)
+        
+        dispatch_async(queue) {
+            for cb in self.successCallbacks {
+                cb(value)
+            }
         }
+        self.successCallbacks = []
     }
-
-    func reject(error: NSError) {
+    
+    public func reject(error: NSError) {
         self.error = error
         self.status = .Rejected
-
-        for cb in self.failureCallbacks {
-            cb(error)
+        
+        dispatch_async(queue) {
+            for cb in self.failureCallbacks {
+                cb(error)
+            }
         }
+        self.failureCallbacks = []
     }
-
-    func then<U>(onFulfill: (T -> U)?, onRejected: Reject?) -> Promise<U> {
+    
+    public func then<U>(onFulfill: (T -> U)?, onRejected: Reject? = nil) -> Promise<U> {
         var nextPromise = Promise<U>(queue: queue)
-
-
+        
         switch status {
-        case .Pending where onFulfill?:
-            successCallbacks += { value in
+        case .Pending where onFulfill? != nil:
+            successCallbacks.append({ value in
                 let transformed: U = onFulfill!(value)
                 nextPromise.fulfill(transformed)
-            }
-
-        case .Pending where onRejected?:
-            failureCallbacks += { error in
+            })
+            
+        case .Pending where onRejected? != nil:
+            failureCallbacks.append({ error in
                 onRejected!(error)
                 nextPromise.reject(error)
-            }
-
-        case .Fulfilled where onFulfill?:
+            })
+            
+        case .Fulfilled where onFulfill? != nil:
             let transformed: U = onFulfill!(self.value!)
             nextPromise.fulfill(transformed)
-
-        case .Rejected where onRejected?:
+            
+        case .Rejected where onRejected? != nil:
             onRejected!(self.error!)
             nextPromise.reject(self.error!)
-
+            
         default: break
         }
-
+        
         return nextPromise
     }
 }
